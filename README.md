@@ -6,7 +6,7 @@ This repository contains my journey of learning everything about DevOps. It's a 
 
 1. [Project-1: User-IP-viewer](./Project-1)
 2. [Project-2: GoalZone](./Project-2)
-3. [Project-3: eCommerce website](./Project-3)
+3. [Project-3: IoT-DevOps Integration](./Project-3)
 
 ## Projects
 
