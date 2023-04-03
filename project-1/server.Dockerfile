@@ -13,7 +13,7 @@ RUN npm install node-fetch@2
 ENV NODE_ENV=production
 
 # copy app files
-COPY . .
+COPY .. .
 
 # expose port
 EXPOSE 3001
