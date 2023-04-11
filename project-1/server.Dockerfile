@@ -19,4 +19,4 @@ COPY .. .
 EXPOSE 3001
 
 # start the app
-CMD ["node", "server.js"]
+CMD ["node", "server.mjs"]
