@@ -10,6 +10,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: eu-west-1
       REACT_APP_LOCATION: project-1/ip-viewer-app/App.Dockerfile
+      REPOSITORY_URL: https://github.com/ArielKaras/DevOps-Projects.git
     steps:
       - uses: actions/checkout@v2
       - name: Configure AWS credentials
@@ -19,7 +20,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
       - run: |
-          docker build . --file $REACT_APP_LOCATION --tag your-repo-url/ip-viewer-app:${{ steps.set-timestamp.outputs.timestamp }}
+          docker build . --file $REACT_APP_LOCATION --tag $REPOSITORY_URL/ip-react-app:${{ steps.set-timestamp.outputs.timestamp }}
         id: build-docker-image
       - name: Set timestamp
         id: set-timestamp
