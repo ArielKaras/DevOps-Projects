@@ -41,7 +41,7 @@ jobs:
           ECR_REPOSITORY: server-app
           IMAGE_TAG: ${{ github.sha }}-${{ steps.timestamp.outputs.timestamp }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $SERVER_APP_LOCATION .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $SERVER_APP_LOCATION ${{ github.workspace }}/project-1
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Build, tag, and push React app image to Amazon ECR
@@ -50,5 +50,5 @@ jobs:
           ECR_REPOSITORY: react-app
           IMAGE_TAG: ${{ github.sha }}-${{ steps.timestamp.outputs.timestamp }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $REACT_APP_LOCATION .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $REACT_APP_LOCATION ${{ github.workspace }}/project-1/ip-viewer-app
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
