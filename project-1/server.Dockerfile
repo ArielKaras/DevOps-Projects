@@ -1,19 +1,27 @@
 # base image
-FROM node:14.18.1-alpine
+FROM node:14.18.1-alpine as build
 
 # set working directory
 WORKDIR /app
 
-# install app dependencies
+# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm install
-RUN npm install node-fetch@2
 
-# set NODE_ENV to production
-ENV NODE_ENV=production
+# Install dependencies
+RUN npm install
 
 # copy app files
 COPY . .
+
+# Production stage
+FROM node:14.18.1-alpine as production
+
+# set working directory
+WORKDIR /app
+
+
+# copy build output from build stage
+COPY --from=build /app /app/
 
 # expose port
 EXPOSE 3001

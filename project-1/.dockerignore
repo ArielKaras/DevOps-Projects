@@ -1,6 +1,6 @@
 node_modules
 ip-viewer-app
 terraform
-docker-compose.yml
+../Docker-compose.yml
 README.md
 ```
