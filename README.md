@@ -4,7 +4,7 @@ This repository contains my journey of learning everything about DevOps. It's a 
 
 ## Table of Contents
 
-1. [Project-1: User-IP-viewer](./Project-1)
+1. [Project-1: User-IP-viewer](https://github.com/ArielKaras/DevOps-Projects/tree/project-1-production/Project-1)
 2. [Project-2: GoalZone](./Project-2)
 3. [Project-3: IoT-DevOps Integration](./Project-3)
 
