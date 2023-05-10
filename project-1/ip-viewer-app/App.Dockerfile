@@ -4,7 +4,7 @@ FROM node:14.18.1-alpine
 # set working directory
 WORKDIR /app
 
-copy . .
+COPY . .
 
 # Install dependencies and serve
 RUN npm install
