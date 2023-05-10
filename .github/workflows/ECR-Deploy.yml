@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -31,7 +31,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Generate timestamp
+      - name: Generate timestamp for tagging images
         id: timestamp
         run: echo "::set-output name=timestamp::$(date +'%Y%m%d-%H%M%S')"
 
@@ -47,7 +47,7 @@ jobs:
       - name: Build, tag, and push React app image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: react-app
+          ECR_REPOSITORY: ip-react-app
           IMAGE_TAG: ${{ github.sha }}-${{ steps.timestamp.outputs.timestamp }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $REACT_APP_LOCATION ${{ github.workspace }}/project-1/ip-viewer-app
