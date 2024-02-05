@@ -1,54 +1,22 @@
----
-name: Build and Push Docker Images
+name: CI
 
-on:
-  push:
+on: [push, pull_request]
 
 jobs:
-  Build:
-    name: Build and Push web-application Docker Images to ECR
-    runs-on: ubuntu-latest
-
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SERVER_APP_LOCATION: project-1/server.Dockerfile
-      REACT_APP_LOCATION: project-1/ip-viewer-app/App.Dockerfile
-      REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
+  validate-yml:
+    runs-on: alpine-latest
+  build:
+    runs-on: alpine-14.18.1
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Generate timestamp for tagging images
-        id: timestamp
-        run: echo "::set-output name=timestamp::$(date +'%Y%m%d-%H%M%S')"
-
-      - name: Build, tag, and push Server image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: server-app
-          IMAGE_TAG: ${{ github.sha }}-${{ steps.timestamp.outputs.timestamp }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $SERVER_APP_LOCATION ${{ github.workspace }}/project-1
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-      - name: Build, tag, and push React app image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: react-app
-          IMAGE_TAG: ${{ github.sha }}-${{ steps.timestamp.outputs.timestamp }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $REACT_APP_LOCATION ${{ github.workspace }}/project-1/ip-viewer-app
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    - uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20.8.1'
+    - name: Install dependencies
+      run: npm install
+    - name: Build
+      run: npm run build
+    - name: Docker Build
+      run: docker-compose build
