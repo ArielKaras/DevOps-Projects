@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Portfolio</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>DevOps Projects</h1>
+            <p class="subtitle">Cloud Native • Infrastructure as Code • CI/CD Automation</p>
+        </header>
+
+        <section id="about">
+            <h2>About</h2>
+            <p style="color: var(--text-secondary); max-width: 800px;">
+                Welcome to my engineering portfolio. Here you will find a collection of projects demonstrating my expertise in the DevOps lifecycle.
+                My focus is on building scalable, secure, and automated systems using industry-standard tools like Kubernetes, Terraform, and AWS.
+            </p>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            <div class="projects-grid">
+
+                <!-- Project 1 -->
+                <article class="card" data-project="project-1">
+                    <h3 class="card-title">User-IP-Viewer</h3>
+                    <p class="card-desc">
+                        A full-stack web application containerized with Docker and deployed to AWS EKS.
+                        Features a complete CI/CD pipeline using GitHub Actions and Infrastructure as Code with Terraform.
+                    </p>
+                    <div class="tech-stack">
+                        <span class="tag">Docker</span>
+                        <span class="tag">Terraform</span>
+                        <span class="tag">AWS EKS</span>
+                        <span class="tag">GitHub Actions</span>
+                        <span class="tag">React</span>
+                    </div>
+                </article>
+
+                <!-- Project 2 -->
+                <article class="card" data-project="project-2">
+                    <h3 class="card-title">GoalZone</h3>
+                    <p class="card-desc">
+                        Real-time soccer updates platform built with Python and Flask.
+                        Demonstrates advanced orchestration with Kubernetes, secure secrets management, and automated testing via Jenkins.
+                    </p>
+                    <div class="tech-stack">
+                        <span class="tag">Kubernetes</span>
+                        <span class="tag">Jenkins</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">DynamoDB</span>
+                        <span class="tag">Snyk</span>
+                    </div>
+                </article>
+
+                <!-- Project 3 -->
+                <article class="card" data-project="project-3">
+                    <h3 class="card-title">IoT-DevOps Integration</h3>
+                    <p class="card-desc">
+                        Bridging the gap between embedded systems and modern DevOps.
+                        A ROS-based robotics application managed with CI/CD pipelines for automated hardware deployment and testing.
+                    </p>
+                    <div class="tech-stack">
+                        <span class="tag">C++</span>
+                        <span class="tag">ROS</span>
+                        <span class="tag">IoT</span>
+                        <span class="tag">AWS</span>
+                        <span class="tag">Terraform</span>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+    </div>
+
+    <!-- Project Details Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalTitle">Project Title</h2>
+                <div id="modalTech" class="tech-stack modal-tech-stack">
+                    <!-- Tech tags injected via JS -->
+                </div>
+            </div>
+            <div id="modalBody" class="project-details">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
