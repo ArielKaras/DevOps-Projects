@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Gravity Control</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #00ff00;
+        }
+        /* Custom scrollbar for cyberpunk feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border: 1px solid #00ff00;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Lucide Icons (Inlined for standalone portability)
+        const Terminal = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+        );
+
+        const Activity = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        );
+
+        const Wifi = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+        );
+
+        const Play = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        );
+
+        function AntiGravityDashboard() {
+            const [url, setUrl] = useState(''); // User pastes IDX URL here
+            const [status, setStatus] = useState('disconnected');
+            const [output, setOutput] = useState('> System initialized...');
+
+            const checkConnection = async () => {
+                if (!url) {
+                    setOutput(prev => prev + '\n> Error: URL required.');
+                    return;
+                }
+
+                // Ensure URL doesn't have trailing slash for consistency
+                const cleanUrl = url.replace(/\/$/, "");
+
+                try {
+                    setStatus('connecting');
+                    setOutput(prev => prev + `\n> Pinging ${cleanUrl}...`);
+                    const res = await fetch(`${cleanUrl}/health`);
+                    if (res.ok) {
+                        setStatus('online');
+                        setOutput(prev => prev + '\n> Connection established with Core.');
+                    } else {
+                        throw new Error('Non-200 response');
+                    }
+                } catch (err) {
+                    setStatus('error');
+                    setOutput(prev => prev + `\n> Connection failed: ${err.message}. Check CORS/URL.`);
+                }
+            };
+
+            const executeCommand = async () => {
+                if (status !== 'online') return;
+
+                const cleanUrl = url.replace(/\/$/, "");
+                setOutput(prev => prev + '\n> Executing payload...');
+                try {
+                    const res = await fetch(`${cleanUrl}/execute`, { method: 'POST' });
+                    const data = await res.json();
+                    if (data.error) {
+                         setOutput(prev => prev + '\n> Remote Error: ' + data.error);
+                    } else {
+                         setOutput(prev => prev + '\n' + data.output);
+                    }
+                } catch (err) {
+                    setOutput(prev => prev + '\n> Execution Error: ' + err.message);
+                }
+            };
+
+            return (
+                <div className="p-6 bg-slate-950 min-h-screen text-green-400 font-mono flex flex-col items-center justify-center">
+                    <div className="w-full max-w-2xl border border-green-500/30 p-4 rounded bg-black shadow-[0_0_15px_rgba(0,255,0,0.1)]">
+                        <h1 className="text-2xl mb-4 flex gap-2 items-center text-green-500 drop-shadow-[0_0_5px_rgba(0,255,0,0.8)]">
+                            <Terminal size={28} />
+                            ANTI-GRAVITY // CONTROL
+                        </h1>
+
+                        {/* Connection Input */}
+                        <div className="flex gap-2 mb-6">
+                            <input
+                                type="text"
+                                placeholder="Paste IDX Public URL (https://...)"
+                                className="bg-slate-900 border border-slate-700 p-2 flex-1 text-sm focus:border-green-500 outline-none text-white placeholder-slate-600"
+                                onChange={(e) => setUrl(e.target.value)}
+                                value={url}
+                            />
+                            <button onClick={checkConnection} className="bg-green-900/30 border border-green-500 px-4 py-2 hover:bg-green-900/50 text-green-400 font-bold transition-all">
+                                <Wifi size={18} className="inline mr-1" /> CONNECT
+                            </button>
+                        </div>
+
+                        {/* Status Indicator */}
+                        <div className="flex items-center gap-2 mb-4 text-xs uppercase tracking-widest border-b border-slate-800 pb-2">
+                            STATUS:
+                            <span className={`font-bold ${status === 'online' ? 'text-green-500 drop-shadow-[0_0_8px_rgba(0,255,0,1)]' : status === 'error' ? 'text-red-500 drop-shadow-[0_0_8px_rgba(255,0,0,1)]' : 'text-slate-500'}`}>
+                                {status}
+                            </span>
+                            {status === 'online' && <Activity size={14} className="animate-pulse text-green-500" />}
+                        </div>
+
+                        {/* Action Button */}
+                        <button
+                            onClick={executeCommand}
+                            disabled={status !== 'online'}
+                            className={`w-full py-3 mb-4 flex justify-center items-center gap-2 font-bold transition-all
+                                ${status === 'online'
+                                    ? 'bg-slate-800 hover:bg-slate-700 border-green-500/50 text-green-400 cursor-pointer shadow-[0_0_10px_rgba(0,255,0,0.1)]'
+                                    : 'bg-slate-900 border-slate-800 text-slate-600 cursor-not-allowed'}
+                                border`}
+                        >
+                            <Play size={16} /> RUN SYSTEM DIAGNOSTICS [ls -la]
+                        </button>
+
+                        {/* Terminal Window */}
+                        <div className="relative">
+                            <div className="absolute top-0 left-0 w-full bg-slate-800/50 h-6 flex items-center px-2 text-[10px] text-slate-400 select-none">
+                                bash -- active
+                            </div>
+                            <div className="bg-black border border-slate-800 pt-8 p-4 h-80 overflow-y-auto whitespace-pre-wrap text-sm text-green-300 font-mono shadow-inner leading-relaxed">
+                                {output}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-4 text-xs text-slate-600">
+                        SYSTEM_ID: BRIDGE_V1.0 // TARGET: PROJECT_IDX
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AntiGravityDashboard />);
+    </script>
+</body>
+</html>
